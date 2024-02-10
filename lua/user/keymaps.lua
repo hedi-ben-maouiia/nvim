@@ -7,11 +7,11 @@ local keymap = vim.api.nvim_set_keymap
 
 
 --Remap space as leader key
-keymap("", "<Space>", "<Nop>", opts)
+keymap('', '<Space>', '<Nop>', opts)
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
--- Function to compile and run C++ code in a split terminal
+-- Function to compile and run C++ And C code in a split terminal
 function CompileAndRunCpp()
   local filename = vim.fn.expand('%')
   local basename = vim.fn.expand('%:r')
@@ -20,6 +20,27 @@ function CompileAndRunCpp()
   vim.fn.termopen(cmd)
   vim.cmd('startinsert') -- To automatically switch to terminal mode after running
 end
+
+function CompileAndRunC()
+    local filename = vim.fn.expand('%')
+    local basename = vim.fn.expand('%:r')
+    local cmd = 'gcc -Wall -o ' .. basename .. ' ' ..  filename .. ' && ./' .. basename
+    
+    vim.cmd('vnew')
+    vim.fn.termopen(cmd)
+    vim.cmd('startinsert') -- To automatically switch to terminal mode after running
+end
+
+-- Function to run any file that you work on either c or c++
+function Run()
+    local basename = vim.fn.expand('%:r')
+    local cmd = './' .. basename
+    
+    vim.cmd('vnew')
+    vim.fn.termopen(cmd)
+    vim.cmd('startinsert') -- To automatically switch to terminal mode after running
+end
+
 -- Modes
 --   normal_mode = "n",
 --   insert_mode = "i",
@@ -29,8 +50,11 @@ end
 --   command_mode = "c",
 
 -- Normal --
--- automatically build and run c++ file 
+-- automatically build and run c++ or c file 
 keymap('n', '<leader>r', ':lua CompileAndRunCpp()<CR>', opts)
+keymap('n', '<F5>', ':lua CompileAndRunC()<CR>',  opts)
+keymap('n', 'R', ':lua Run()<CR>', opts)
+
 -- Better window navigation
 keymap("n", "<C-h>", "<C-w>h", opts)
 keymap("n", "<C-j>", "<C-w>j", opts)
